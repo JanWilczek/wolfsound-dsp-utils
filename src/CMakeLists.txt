@@ -1,0 +1,4 @@
+add_library(wolfsound_dsp_utils INTERFACE)
+target_include_directories(wolfsound_dsp_utils INTERFACE include)
+add_library(wolfsound::wolfsound_dsp_utils ALIAS wolfsound_dsp_utils)
+
