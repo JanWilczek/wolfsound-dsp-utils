@@ -73,7 +73,7 @@ using Seconds = std::chrono::duration<float>;
 
 inline std::size_t samplesCountFrom(Frequency sampleRate, Seconds duration) {
   return static_cast<std::size_t>(
-      std::round(static_cast<float>(duration.count()) * sampleRate.value()));
+      std::round(duration.count() * sampleRate.value()));
 }
 
 inline std::vector<float> generateSine(Frequency frequency,
