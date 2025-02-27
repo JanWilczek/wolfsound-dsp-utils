@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-project(WolfSoundDspUtils VERSION 0.1.1)
+project(WolfSoundDspUtils VERSION 0.2.0)
 
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 20)
