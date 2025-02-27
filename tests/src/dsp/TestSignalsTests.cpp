@@ -9,6 +9,13 @@ TEST(TestSignals, GenerateSineAndWriteToFile) {
 
   const auto sine = wolfsound::generateSine(440_Hz, SAMPLE_RATE, 5s);
 
-  WavFileWriter::writeToFile("sine440Hz.wav", sine, SAMPLE_RATE);
+  const auto outputPath =
+      juce::File::getSpecialLocation(
+          juce::File::SpecialLocationType::currentExecutableFile)
+          .getParentDirectory()
+          .getChildFile("sine440Hz.wav")
+          .getFullPathName()
+          .toStdString();
+  WavFileWriter::writeToFile(outputPath, sine, SAMPLE_RATE);
 }
 }  // namespace wolfsound
