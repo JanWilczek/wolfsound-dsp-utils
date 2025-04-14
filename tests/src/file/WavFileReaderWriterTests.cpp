@@ -2,6 +2,7 @@
 #include <wolfsound/file/wolfsound_WavFileWriter.hpp>
 #include <wolfsound/file/wolfsound_WavFileReader.hpp>
 #include "wolfsound/dsp/wolfsound_testSignals.hpp"
+#include <chrono>
 
 namespace wolfsound {
 TEST(WavFileReaderWriter, WriteAndReadFilePreservesContent) {

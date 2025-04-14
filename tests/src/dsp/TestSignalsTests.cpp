@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <wolfsound/dsp/wolfsound_testSignals.hpp>
 #include <wolfsound/file/wolfsound_WavFileWriter.hpp>
+#include <chrono>
 
 namespace wolfsound {
 TEST(TestSignals, GenerateSineAndWriteToFile) {
