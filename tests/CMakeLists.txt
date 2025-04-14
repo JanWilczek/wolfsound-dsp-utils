@@ -31,8 +31,11 @@ cpmaddpackage(
 )
 
 add_executable(
-  WolfSoundDspUtilsTests src/common/MidiNoteNumberTests.cpp src/dsp/TestSignalsTests.cpp
-                         src/juce/callOnMessageThreadIfNotNullTests.cpp
+  WolfSoundDspUtilsTests
+  src/common/MidiNoteNumberTests.cpp
+  src/dsp/TestSignalsTests.cpp
+  src/file/WavFileReaderWriterTests.cpp
+  src/juce/callOnMessageThreadIfNotNullTests.cpp
 )
 
 target_link_libraries(
