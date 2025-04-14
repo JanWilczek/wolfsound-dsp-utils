@@ -17,6 +17,12 @@ public:
                           const std::vector<float>& samples,
                           Frequency sampleRate);
 
+  /** @brief A shorthand for creating an instance and writing samples to it */
+  template <typename SampleType>
+  static void writeToFile(const std::string& absolutePath,
+                          juce::Span<const SampleType> samples,
+                          Frequency sampleRate);
+
   struct Args {
     std::string absolutePath;
     Frequency sampleRate;
@@ -26,6 +32,9 @@ public:
 
   void write(const std::vector<float>& samples) const;
 
+  template <typename SampleType>
+  void write(juce::Span<const SampleType> samples) const;
+
 private:
   [[nodiscard]] juce::File outputDirectory() const;
 
@@ -34,17 +43,19 @@ private:
 };
 
 namespace detail {
+template <typename SampleType>
 class PtrArrayVectorWrapper {
 public:
-  explicit PtrArrayVectorWrapper(const std::vector<float>& singleChannelSamples)
+  explicit PtrArrayVectorWrapper(
+      juce::Span<const SampleType> singleChannelSamples)
       : singleChannelSamples_{singleChannelSamples},
         ptr_{singleChannelSamples_.data()} {}
 
   [[nodiscard]] const float* const* ptrArray() const noexcept { return &ptr_; }
 
 private:
-  const std::vector<float>& singleChannelSamples_;  // NOLINT
-  const float* ptr_;
+  juce::Span<const SampleType> singleChannelSamples_;
+  const SampleType* ptr_;
 };
 
 inline std::string sanitizeFilename(std::string filename) {
@@ -67,6 +78,13 @@ inline juce::File WavFileWriter::outputDirectory() const {
 inline void WavFileWriter::writeToFile(const std::string& absolutePath,
                                        const std::vector<float>& samples,
                                        Frequency sampleRate) {
+  writeToFile(absolutePath, juce::Span{samples}, sampleRate);
+}
+
+template <typename SampleType>
+inline void WavFileWriter::writeToFile(const std::string& absolutePath,
+                                       juce::Span<const SampleType> samples,
+                                       Frequency sampleRate) {
   WavFileWriter wavWriter{
       {.absolutePath = absolutePath, .sampleRate = sampleRate}};
   wavWriter.write(samples);
@@ -76,6 +94,11 @@ inline WavFileWriter::WavFileWriter(Args args)
     : file_{args.absolutePath}, sampleRate_{args.sampleRate} {}
 
 inline void WavFileWriter::write(const std::vector<float>& samples) const {
+  write(juce::Span{samples});
+}
+
+template <typename SampleType>
+void WavFileWriter::write(juce::Span<const SampleType> samples) const {
   const auto filename =
       detail::sanitizeFilename(file_.getFileName().toStdString());
   auto outputFile = outputDirectory().getChildFile(filename);
