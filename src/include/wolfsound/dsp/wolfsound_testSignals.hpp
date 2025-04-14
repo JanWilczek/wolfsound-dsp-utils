@@ -65,6 +65,7 @@
 #include <random>
 #include <vector>
 #include <ranges>
+#include <chrono>
 #include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <wolfsound/common/wolfsound_assert.hpp>
 #include <wolfsound/common/wolfsound_mathFunctions.hpp>
