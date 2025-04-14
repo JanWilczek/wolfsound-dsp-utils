@@ -39,6 +39,10 @@
     {
       "name": "default",
       "configurePreset": "default"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
     }
   ],
   "testPresets": [
@@ -65,7 +69,6 @@
       "name": "Xcode",
       "inherits": "default",
       "configurePreset": "Xcode",
-      // Use Debug by default
       "configuration": "Debug"
     }
   ]
