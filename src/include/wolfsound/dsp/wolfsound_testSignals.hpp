@@ -62,8 +62,10 @@
 
 #include <algorithm>
 #include <numbers>
+#include <random>
 #include <vector>
 #include <ranges>
+#include <chrono>
 #include <wolfsound/common/wolfsound_Frequency.hpp>
 #include <wolfsound/common/wolfsound_assert.hpp>
 #include <wolfsound/common/wolfsound_mathFunctions.hpp>
@@ -149,6 +151,22 @@ inline std::vector<float> generateNonaliasingSawRampDown(Frequency frequency,
 
   constexpr auto TWO_OVER_PI = 2.f / std::numbers::pi_v<float>;
   std::ranges::for_each(result, [](float& sample) { sample *= TWO_OVER_PI; });
+
+  return result;
+}
+
+inline std::vector<float> generateWhiteNoise(
+    Frequency sampleRate,
+    Seconds duration,
+    unsigned int seed = std::random_device{}()) {
+  std::default_random_engine engine{seed};
+  std::uniform_real_distribution<float> distribution{-1.f, 1.f};
+
+  const auto samplesCount = samplesCountFrom(sampleRate, duration);
+  std::vector<float> result(samplesCount);
+
+  std::generate(result.begin(), result.end(),
+                [&] { return distribution(engine); });
 
   return result;
 }

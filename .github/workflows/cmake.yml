@@ -1,0 +1,54 @@
+name: CMake
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-14, windows-latest]
+        preset: [default, release]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: List Xcode installations
+      if: matrix.os == 'macos-14'
+      run: sudo ls -1 /Applications | grep "Xcode"
+
+    - name: Select Xcode 16.2
+      if: matrix.os == 'macos-14'
+      run: sudo xcode-select -s /Applications/Xcode_16.2.0.app/Contents/Developer
+
+    - uses: ilammy/msvc-dev-cmd@v1 # use MSVC on Windows not minGW
+
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v5
+
+    - name: Cache ninja-build
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-ninja-build
+        path: |
+          ${GITHUB_WORKSPACE}/ninja-build
+
+    - uses: actions/checkout@v4
+
+    - name: Cache dependencies
+      id: cache-libs
+      uses: actions/cache@v4
+      with:
+        path: ${{github.workspace}}/libs
+        key: libs
+
+    - name: Configure CMake
+      run: cmake --preset ${{ matrix.preset }} -DBUILD_TESTS=ON
+
+    - name: Build
+      run: cmake --build --preset ${{ matrix.preset }}
+
+    - name: Test
+      run: ctest --preset ${{ matrix.preset }}
+

@@ -22,7 +22,7 @@ The library does not automatically manage JUCE so if you're receiving compiler o
 
 ## 🔗 Dependencies
 
-`ProcessorFileIoTest`, `WavFileReader` and `WavFileWriter` depend on `juce::juce_core` and `juce::juce_audio_formats`. You need to link against them yourself. See _tests/CMakeLists.txt_ for usage example.
+- `ProcessorFileIoTest`, `WavFileReader` and `WavFileWriter` depend on `juce::juce_core` and `juce::juce_audio_formats`. You need to link against them yourself. See _tests/CMakeLists.txt_ for usage example.
 
 ```cmake
 target_link_libraries(
@@ -34,6 +34,8 @@ target_link_libraries(
 
 target_compile_definitions(MyAwesomePlugin PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
 ```
+
+- `callOnMessageThreadIfNotNull()` depends on `juce::juce_events`.
 
 ## 📋 License
 
