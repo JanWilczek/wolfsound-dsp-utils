@@ -14,7 +14,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Clean up workspace
+    - name: Clean up workspace [windows]
+      if: matrix.os == 'windows-latest'
+      run: rm -r -Force build release-build
+
+    - name: Clean up workspace [macos, ubuntu]
+      if: matrix.os == 'windows-latest' || matrix.os == 'ubuntu-latest'
       run: rm -rf build release-build
 
     - name: List Xcode installations
