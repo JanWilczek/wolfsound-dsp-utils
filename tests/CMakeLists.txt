@@ -6,10 +6,8 @@ cpmaddpackage(
   GOOGLETEST
   GITHUB_REPOSITORY
   google/googletest
-  GIT_TAG
-  v1.15.2
   VERSION
-  1.15.2
+  1.16.0
   SOURCE_DIR
   ${LIB_DIR}/googletest
   OPTIONS
@@ -21,9 +19,7 @@ cpmaddpackage(
   NAME
   JUCE
   GIT_TAG
-  8.0.6
-  VERSION
-  8.0.6
+  8.0.7
   GITHUB_REPOSITORY
   juce-framework/JUCE
   SOURCE_DIR
