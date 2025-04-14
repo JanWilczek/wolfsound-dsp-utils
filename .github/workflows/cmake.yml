@@ -14,9 +14,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Clean up workspace
-      run: rm -rf ${{ github.workspace }}
-
     - name: List Xcode installations
       if: matrix.os == 'macos-14'
       run: sudo ls -1 /Applications | grep "Xcode"
