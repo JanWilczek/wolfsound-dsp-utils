@@ -16,11 +16,11 @@ jobs:
     steps:
     - name: Clean up workspace [windows]
       if: matrix.os == 'windows-latest'
-      run: rm -r -Force build release-build
+      run: rm -r -Force build release-build ${{github.workspace}}/build
 
     - name: Clean up workspace [macos, ubuntu]
       if: matrix.os == 'windows-latest' || matrix.os == 'ubuntu-latest'
-      run: rm -rf build release-build
+      run: rm -rf build release-build ${{github.workspace}}/build
 
     - name: List Xcode installations
       if: matrix.os == 'macos-14'
