@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Clean up workspace
-      run: rm -rf ${{ github.workspace }}/build ${{ github.workspace }}/release-build
+      run: rm -rf ${{ github.workspace }}
 
     - name: List Xcode installations
       if: matrix.os == 'macos-14'
