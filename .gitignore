@@ -13,6 +13,8 @@ out/
 vs-build/
 test_output/
 .DS_Store
+todo.md
+done.md
 
 # Prerequisites
 *.d
