@@ -106,19 +106,26 @@ void WavFileWriter::write(juce::Span<const SampleType> samples) const {
   // if the file is in a directory that must be created, do it first
   outputFile.create();
 
-  auto outStream = std::make_unique<juce::FileOutputStream>(outputFile);
+  auto openAndTruncateFile =
+      [](const juce::File& file) -> std::unique_ptr<juce::OutputStream> {
+    auto outStream = std::make_unique<juce::FileOutputStream>(file);
 
-  if (outStream->failedToOpen()) {
-    throw std::runtime_error{"failed to open the file for writing"};
-  }
-  outStream->setPosition(0);
-  outStream->truncate();
+    if (outStream->failedToOpen()) {
+      throw std::runtime_error{"failed to open the file for writing"};
+    }
+    outStream->setPosition(0);
+    outStream->truncate();
+    return outStream;
+  };
 
+  auto outStream = openAndTruncateFile(outputFile);
   juce::WavAudioFormat wavFormat;
-  const auto writer =
-      std::unique_ptr<juce::AudioFormatWriter>{wavFormat.createWriterFor(
-          outStream.get(), static_cast<double>(sampleRate_.value()), 1u, 16, {},
-          0)};
+  const auto writer = wavFormat.createWriterFor(
+      outStream, juce::AudioFormatWriterOptions{}
+                     .withSampleRate(static_cast<double>(sampleRate_.value()))
+                     .withNumChannels(1)
+                     .withBitsPerSample(16)
+                     .withQualityOptionIndex(0));
   if (writer == nullptr) {
     throw std::runtime_error{"failed to initialize WAV file writer"};
   }
