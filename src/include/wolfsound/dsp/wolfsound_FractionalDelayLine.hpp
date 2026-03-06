@@ -118,7 +118,7 @@ SampleType FractionalDelayLine<SampleType>::popSample(SampleType delay) const {
     readHead += DELAY_LINE_LENGTH_FLOAT;
   }
 
-  auto truncatedReadHead = std::floor(clampDelay(readHead));
+  const auto truncatedReadHead = std::floor(clampDelay(readHead));
   auto truncatedReadHeadPlusOne = truncatedReadHead + 1.f;
 
   const auto truncatedReadHeadWeight =
