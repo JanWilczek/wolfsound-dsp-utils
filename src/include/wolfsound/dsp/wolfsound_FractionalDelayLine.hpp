@@ -65,48 +65,53 @@
 #include <wolfsound/common/wolfsound_assert.hpp>
 
 namespace wolfsound {
+template <typename SampleType>
 class FractionalDelayLine {
 public:
-  [[nodiscard]] float popSample() const;
-  [[nodiscard]] float popSample(float delay) const;
-  void pushSample(float inputSample);
-  void setDelay(float newDelay);
+  [[nodiscard]] SampleType popSample() const;
+  [[nodiscard]] SampleType popSample(SampleType delay) const;
+  void pushSample(SampleType inputSample);
+  void setDelay(SampleType newDelay);
   void reset();
 
 private:
   static constexpr auto DELAY_LINE_LENGTH = 48000u;
 
-  [[nodiscard]] float clampDelay(float delay) const noexcept;
+  [[nodiscard]] SampleType clampDelay(SampleType delay) const noexcept;
 
-  std::array<float, DELAY_LINE_LENGTH> buffer_{};
+  std::array<SampleType, DELAY_LINE_LENGTH> buffer_{};
 
-  float delay_ = 4.f;
+  SampleType delay_ = 4.f;
   int writeHead_ = 0;
 };
 
-inline float FractionalDelayLine::popSample() const {
+template <typename SampleType>
+SampleType FractionalDelayLine<SampleType>::popSample() const {
   return popSample(delay_);
 }
 
-inline void FractionalDelayLine::pushSample(float inputSample) {
+template <typename SampleType>
+void FractionalDelayLine<SampleType>::pushSample(SampleType inputSample) {
   buffer_[static_cast<size_t>(writeHead_)] = inputSample;
   writeHead_++;
   writeHead_ %= static_cast<int>(std::ssize(buffer_));
 }
 
-inline void FractionalDelayLine::setDelay(float newDelay) {
-  WS_PRECONDITION(newDelay < static_cast<float>(DELAY_LINE_LENGTH));
+template <typename SampleType>
+void FractionalDelayLine<SampleType>::setDelay(SampleType newDelay) {
+  WS_PRECONDITION(newDelay < static_cast<SampleType>(DELAY_LINE_LENGTH));
   delay_ = clampDelay(newDelay);
 }
 
-inline float FractionalDelayLine::popSample(float delay) const {
+template <typename SampleType>
+SampleType FractionalDelayLine<SampleType>::popSample(SampleType delay) const {
   constexpr auto DELAY_LINE_LENGTH_FLOAT =
-      static_cast<float>(DELAY_LINE_LENGTH);
+      static_cast<SampleType>(DELAY_LINE_LENGTH);
 
   WS_PRECONDITION(delay >= 0.f);
   WS_PRECONDITION(delay < DELAY_LINE_LENGTH_FLOAT);
 
-  auto readHead = static_cast<float>(writeHead_) - 1 - delay;
+  auto readHead = static_cast<SampleType>(writeHead_) - 1 - delay;
   if (readHead < 0.f) {
     readHead += DELAY_LINE_LENGTH_FLOAT;
   }
@@ -137,11 +142,15 @@ inline float FractionalDelayLine::popSample(float delay) const {
   return outputSample;
 }
 
-inline void FractionalDelayLine::reset() {
-  std::ranges::fill(buffer_, 0.f);
+template <typename SampleType>
+void FractionalDelayLine<SampleType>::reset() {
+  std::ranges::fill(buffer_, SampleType{0});
 }
 
-inline float FractionalDelayLine::clampDelay(float delay) const noexcept {
-  return std::clamp(delay, 0.f, static_cast<float>(DELAY_LINE_LENGTH - 1u));
+template <typename SampleType>
+SampleType FractionalDelayLine<SampleType>::clampDelay(
+    SampleType delay) const noexcept {
+  return std::clamp(delay, SampleType{0},
+                    static_cast<SampleType>(DELAY_LINE_LENGTH - 1u));
 }
 }  // namespace wolfsound

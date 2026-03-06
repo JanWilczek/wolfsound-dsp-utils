@@ -4,7 +4,7 @@
 
 namespace wolfsound {
 TEST(FractionalDelayLine, PopOrderCorrespondsToPushOrder) {
-  FractionalDelayLine delayLine;
+  FractionalDelayLine<float> delayLine;
 
   ASSERT_FLOAT_EQ(0.f, delayLine.popSample(2));
 
@@ -35,7 +35,7 @@ TEST(FractionalDelayLine, PopOrderCorrespondsToPushOrder) {
 }
 
 TEST(FractionalDelayLine, IsResilientAgainstNumericalUnderflow) {
-  FractionalDelayLine delayLine;
+  FractionalDelayLine<float> delayLine;
 
   for (const auto i : std::views::iota(0, 50)) {
     delayLine.pushSample(static_cast<float>(i));
