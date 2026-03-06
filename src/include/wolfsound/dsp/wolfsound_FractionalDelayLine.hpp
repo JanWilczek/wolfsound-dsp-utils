@@ -68,27 +68,29 @@ namespace wolfsound {
 template <typename SampleType>
 class FractionalDelayLine {
 public:
-  [[nodiscard]] SampleType popSample() const;
+  [[nodiscard]] SampleType popSample() const { return popSample(delay_); }
+
   [[nodiscard]] SampleType popSample(SampleType delay) const;
+
   void pushSample(SampleType inputSample);
+
   void setDelay(SampleType newDelay);
-  void reset();
+
+  void reset() noexcept { std::ranges::fill(buffer_, SampleType{0}); }
 
 private:
   static constexpr auto DELAY_LINE_LENGTH = 48000u;
 
-  [[nodiscard]] SampleType clampDelay(SampleType delay) const noexcept;
+  [[nodiscard]] SampleType clampDelay(SampleType delay) const noexcept {
+    return std::clamp(delay, SampleType{0},
+                      static_cast<SampleType>(DELAY_LINE_LENGTH - 1u));
+  }
 
   std::array<SampleType, DELAY_LINE_LENGTH> buffer_{};
 
   SampleType delay_ = 4.f;
   int writeHead_ = 0;
 };
-
-template <typename SampleType>
-SampleType FractionalDelayLine<SampleType>::popSample() const {
-  return popSample(delay_);
-}
 
 template <typename SampleType>
 void FractionalDelayLine<SampleType>::pushSample(SampleType inputSample) {
@@ -140,17 +142,5 @@ SampleType FractionalDelayLine<SampleType>::popSample(SampleType delay) const {
       (truncatedReadHeadPlusOneWeight *
        buffer_[static_cast<size_t>(truncatedReadHeadPlusOne)]);
   return outputSample;
-}
-
-template <typename SampleType>
-void FractionalDelayLine<SampleType>::reset() {
-  std::ranges::fill(buffer_, SampleType{0});
-}
-
-template <typename SampleType>
-SampleType FractionalDelayLine<SampleType>::clampDelay(
-    SampleType delay) const noexcept {
-  return std::clamp(delay, SampleType{0},
-                    static_cast<SampleType>(DELAY_LINE_LENGTH - 1u));
 }
 }  // namespace wolfsound
