@@ -44,7 +44,7 @@ jobs:
         key: libs
 
     - name: Configure CMake
-      run: cmake --preset ${{ matrix.preset }} -DBUILD_TESTS=ON
+      run: cmake --preset ${{ matrix.preset }}
 
     - name: Build
       run: cmake --build --preset ${{ matrix.preset }}
