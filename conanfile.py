@@ -7,7 +7,7 @@ from conan.tools.build import check_min_cppstd
 
 # After: https://docs.conan.io/2/tutorial/creating_packages/other_types_of_packages/header_only_packages.html
 # and: https://github.com/conan-io/conan-center-index/blob/master/recipes/doctest/2.x.x/conanfile.py
-class SumConan(ConanFile):
+class WolfSoundDspUtilsRecipe(ConanFile):
     name = "wolfsound-dsp-utils"
     version = "0.5.0"
     settings = "os", "arch", "compiler", "build_type"
