@@ -1,5 +1,5 @@
 #include <wolfsound/juce/wolfsound_ParameterHolder.hpp>
-#include <wolfsound/test/wolfsound_TestAudioProcessorBase.h>
+#include <wolfsound/test/wolfsound_TestAudioProcessorBase.hpp>
 #include <gtest/gtest.h>
 
 namespace wolfsound {
