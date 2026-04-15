@@ -60,6 +60,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <functional>
 // use juce_audio_processors instead of juce_audio_processors_headless
 // for backward compatibility
 #include <juce_audio_processors/juce_audio_processors.h>
