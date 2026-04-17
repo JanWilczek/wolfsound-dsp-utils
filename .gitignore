@@ -15,6 +15,7 @@ test_output/
 .DS_Store
 todo.md
 done.md
+CMakeUserPresets.json
 
 # Prerequisites
 *.d
