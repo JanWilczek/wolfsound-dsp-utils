@@ -29,6 +29,7 @@ cpmaddpackage(
 add_executable(
   WolfSoundDspUtilsTests
   src/common/MidiNoteNumberTests.cpp
+  src/common/WhenLeavingScopeExecuteTests.cpp
   src/dsp/FractionalDelayLineTests.cpp
   src/dsp/TestSignalsTests.cpp
   src/file/WavFileReaderWriterTests.cpp
