@@ -35,6 +35,7 @@ add_executable(
   src/file/WavFileReaderWriterTests.cpp
   src/juce/callOnMessageThreadIfNotNullTests.cpp
   src/juce/ParameterHolderTests.cpp
+  src/juce/SerializedParametersTests.cpp
 )
 
 target_link_libraries(
