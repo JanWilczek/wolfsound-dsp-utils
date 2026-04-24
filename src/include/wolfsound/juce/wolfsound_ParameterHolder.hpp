@@ -212,7 +212,8 @@ class ParameterHolder {
 
 public:
   /** @brief Use this class to define, instantiate, and collect Parameter
-      instances, and to then construct a valid ParameterHolder containing them. */
+      instances, and to then construct a valid ParameterHolder containing them.
+   */
   class Builder {
   public:
     template <class P, class... Args>
@@ -230,7 +231,8 @@ public:
 
         One-time operations that destroy the object should be qualified with &&
         to make it explicit at the call site
-        (see https://www.foonathan.net/2018/03/rvalue-references-api-guidelines/)
+        (see
+       https://www.foonathan.net/2018/03/rvalue-references-api-guidelines/)
      */
     ParameterHolder<Visitor> build(juce::AudioProcessor& p) && {
       for (auto&& parameter : _parameters) {
@@ -244,9 +246,6 @@ public:
     std::vector<TypeErasedParameter> _parametersForHolder;
   };
 
-  explicit ParameterHolder(std::vector<TypeErasedParameter> parameters)
-      : _parameters{std::move(parameters)} {}
-
   void accept(Visitor& v) {
     for (auto& parameter : _parameters) {
       parameter.accept(v);
@@ -254,6 +253,9 @@ public:
   }
 
 private:
+  explicit ParameterHolder(std::vector<TypeErasedParameter> parameters)
+      : _parameters{std::move(parameters)} {}
+
   std::vector<TypeErasedParameter> _parameters;
 };
 
