@@ -66,6 +66,100 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 
 namespace wolfsound {
+/** @brief Type-erased container of Parameter class instances
+
+    In audio plugins, we need to both access individual parameters instances
+    as well as iterate over all parameters. Sometimes we need a concrete
+    Parameter object of a specified type (e.g., juce::AudioParameterFloat),
+    but sometimes we want to treat the parameters as a collection
+    (e.g., for state serialization purposes, presets, etc.).
+
+    One approach is to use virtual inheritance and pointers-to-base (like
+    juce::AudioProcessorValueTreeState does it). This has the downside
+    of losing the type information and the need to either treat all
+    parameters as floats in the [0, 1] range or to use dynamic_cast (which
+    is slow and error-prone).
+
+    Type erasure is an alternative pattern allowing storing a collection of
+    strongly-typed objects that don't need a common base class.
+
+    The Visitor pattern allows us to access all stored parameters in
+    a type-safe manner. However, individual parameter access is not
+    supported: capture the parameters by reference returned by the Builder's
+    class member functions to access the individually (e.g., to display
+    juce::AudioParameterChoice choices or to use JUCE's ParameterAttachment
+    classes).
+
+    You can customize the supported parameter types by supplying a different
+    Visitor base as the template class argument. The accept() member function
+    requires that the supplied visitor is a child class of the Visitor template
+    argument. For simplicity, I provide a JuceParameterVisitor that
+    defines abstract methods for each JUCE Parameter class. You can inherit
+    from it to add new methods. This default interface is used in the
+    JuceParameterHolder.
+
+    As an example, here's how you use the JuceParameterHolder (see associated
+    unit tests as well).
+
+    First, put is as a member of your PluginProcessor.
+
+    @code
+    private:
+        wolfsound::JuceParameterHolder parameters;
+    @endcode
+
+    Then, list all parameters that you use with their types as references ABOVE
+    the ParameterHolder declaration.
+
+    @code
+    private:
+        juce::AudioParameterFloat& floatParam;
+        juce::AudioParameterBool& boolParam;
+        juce::AudioParameterInt& intParam;
+        juce::AudioParameterChoice& choiceParam;
+        wolfsound::JuceParameterHolder parameters;
+    @endcode
+
+    Pass an instance of JuceParameterHolder::Builder to your PluginProcessor's
+    constructor (may be as an argument with a default value), and use its
+    add() function to add parameters in the initializer list. Finally,
+    call .build(*this) on the builder (not the you need to move it first).
+    @code
+    // header file
+    explicit PluginProcessor(JuceParameterHolder::Builder builder = {});
+
+    // implementation file
+    PluginProcessor::PluginProcessor(
+        JuceParameterHolder::Builder builder)
+        : floatParam{builder.add<juce::AudioParameterFloat>(
+              "floatParam",
+              "Float Param",
+              juce::NormalisableRange{1.f, 10.f},
+              5.f)},
+          boolParam{builder.add<juce::AudioParameterBool>("boolParam",
+                                                          "Bool Param",
+                                                          true)},
+          intParam{builder.add<juce::AudioParameterInt>("intParam",
+                                                        "Int Param",
+                                                        5,
+                                                        10,
+                                                        6)},
+          choiceParam{builder.add<juce::AudioParameterChoice>(
+              "choiceParam",
+              "Choice Param",
+              juce::StringArray{"choice 0", "choice 1", "choice 2"},
+              1)},
+          parameterHolder{std::move(builder).build(*this)} {}
+    @endcode
+
+    Now you can access the parameters individually via references, or
+    as a collection by "visiting" the ParameterHolder instance.
+    See toVarArray() and update() for examples on how to do this.
+
+    For the interested, the std::move(builder) requirement ensures that the
+    builder is not used after calling build(). If it is, the code
+    won't compile.
+ */
 template <class Visitor>
 class ParameterHolder {
   class TypeErasedParameter {
