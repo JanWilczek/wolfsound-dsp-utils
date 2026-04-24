@@ -164,8 +164,17 @@ namespace wolfsound {
     I recommend Klaus Iglberger's book "C++ Software Design."
 
     @tparam Visitor base class of all supported visitors. Should contain a void
-   visit(const ParameterClass&) abstract method for every supported Parameter
-   class.
+    visit(ParameterClass&) abstract method for every supported Parameter
+    class, e.g.,
+    @code
+    struct Visitor {
+      virtual ~Visitor() = default;
+      virtual void visit(juce::AudioParameterBool&) = 0;
+      virtual void visit(juce::AudioParameterFloat&) = 0;
+      //...
+      virtual void visit(MyCustomParameter&) = 0;
+    };
+    @endcode
 
     @see JuceParameterVisitor, JuceParameterHolder
  */
@@ -178,16 +187,6 @@ class ParameterHolder {
     explicit TypeErasedParameter(Parameter& p)
         : _impl{std::make_unique<ParameterModel<Parameter>>(p)} {}
 
-    /**
-     * The Visitor class is expected to have a visit() member function
-     * for each supported parameter type, e.g.,
-     *
-     *   struct Visitor {
-     *     void visit(juce::AudioParameterBool&);
-     *     void visit(juce::AudioParameterFloat&);
-     *     //...
-     *   };
-     */
     void accept(Visitor& v) { _impl->accept(v); }
 
   private:
@@ -212,6 +211,8 @@ class ParameterHolder {
   };
 
 public:
+  /** @brief Use this class to define, instantiate, and collect Parameter
+      instances, and to then construct a valid ParameterHolder containing them. */
   class Builder {
   public:
     template <class P, class... Args>
@@ -223,9 +224,14 @@ public:
       return ref;
     }
 
-    // one-time operations that destroy the object should be qualified with &&
-    // to make it explicit at the call site
-    // (see https://www.foonathan.net/2018/03/rvalue-references-api-guidelines/)
+    /** @brief Create the ParameterHolder while destroying the Builder
+
+        You must call this method as std::move(builder).build(...).
+
+        One-time operations that destroy the object should be qualified with &&
+        to make it explicit at the call site
+        (see https://www.foonathan.net/2018/03/rvalue-references-api-guidelines/)
+     */
     ParameterHolder<Visitor> build(juce::AudioProcessor& p) && {
       for (auto&& parameter : _parameters) {
         p.addParameter(parameter.release());
