@@ -311,7 +311,7 @@ juce::Array<juce::var> toVarArray(ParameterHolder<Visitor>& ph) {
 }
 
 /** @brief Updates parameters in the holder based on values in the passed-in
-   array
+    array
 
     The array should contain juce::DynamicObject instances, each having
     an "id" field with a string and a "value" field with the parameter value,
