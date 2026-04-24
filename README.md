@@ -37,6 +37,18 @@ target_compile_definitions(MyAwesomePlugin PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CU
 
 - `callOnMessageThreadIfNotNull()` depends on `juce::juce_events`.
 
+## 🐸 Conan
+
+To create and validate a Conan package from the library, run
+
+```bash
+# "Debug" and "gnu20" are used for tests only
+conan create -s build_type=Debug -s compiler.cppstd=gnu20
+
+# Verify the package was created successfully
+conan list "wolfsound-dsp-utils"
+```
+
 ## 📋 License
 
 This repository is MIT-licensed.

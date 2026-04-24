@@ -18,7 +18,7 @@
     },
     {
       "name": "release",
-      "generator": "Ninja",
+      "inherits": "default",
       "binaryDir": "release-build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
@@ -26,11 +26,13 @@
     },
     {
       "name": "vs",
+      "inherits": "default",
       "generator": "Visual Studio 17 2022",
       "binaryDir": "vs-build"
     },
     {
       "name": "Xcode",
+      "inherits": "default",
       "generator": "Xcode",
       "binaryDir": "xcode-build"
     }

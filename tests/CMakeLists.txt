@@ -19,7 +19,7 @@ cpmaddpackage(
   NAME
   JUCE
   GIT_TAG
-  8.0.10
+  8.0.12
   GITHUB_REPOSITORY
   juce-framework/JUCE
   SOURCE_DIR
@@ -29,10 +29,13 @@ cpmaddpackage(
 add_executable(
   WolfSoundDspUtilsTests
   src/common/MidiNoteNumberTests.cpp
+  src/common/WhenLeavingScopeExecuteTests.cpp
   src/dsp/FractionalDelayLineTests.cpp
   src/dsp/TestSignalsTests.cpp
   src/file/WavFileReaderWriterTests.cpp
   src/juce/callOnMessageThreadIfNotNullTests.cpp
+  src/juce/ParameterHolderTests.cpp
+  src/juce/SerializedParametersTests.cpp
 )
 
 target_link_libraries(
@@ -42,6 +45,7 @@ target_link_libraries(
           juce::juce_core
           juce::juce_audio_formats
           juce::juce_events
+          juce::juce_audio_processors
 )
 
 target_compile_definitions(WolfSoundDspUtilsTests PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
