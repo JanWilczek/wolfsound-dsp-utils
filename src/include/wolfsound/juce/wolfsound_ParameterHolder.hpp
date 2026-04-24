@@ -246,6 +246,14 @@ public:
     std::vector<TypeErasedParameter> _parametersForHolder;
   };
 
+  /** @brief Construct an empty ParameterHolder.
+
+      Use this only if you don't have any parameters.
+  */
+  ParameterHolder() = default;
+
+  /** @brief Iterate over all parameters calling the appropriate Visitor method
+      on each one. */
   void accept(Visitor& v) {
     for (auto& parameter : _parameters) {
       parameter.accept(v);
@@ -259,6 +267,8 @@ private:
   std::vector<TypeErasedParameter> _parameters;
 };
 
+/** @brief Example ParameterHolder visitor that collects parameters' IDs and
+    values in an array of juce::DynamicObject objects */
 template <class Visitor>
 class VarArrayVisitor : public Visitor {
 public:
@@ -292,6 +302,7 @@ private:
   juce::Array<juce::var> _result;
 };
 
+/** @brief Shorthand way of using VarArrayVisitor */
 template <class Visitor>
 juce::Array<juce::var> toVarArray(ParameterHolder<Visitor>& ph) {
   VarArrayVisitor<Visitor> visitor;
@@ -358,6 +369,7 @@ private:
   const juce::Array<juce::var>& _parameters;
 };
 
+/** @brief Shorthand way of using UpdatingVisitor */
 template <class Visitor>
 void update(ParameterHolder<Visitor>& ph,
             const juce::Array<juce::var>& parameters) {
@@ -365,6 +377,11 @@ void update(ParameterHolder<Visitor>& ph,
   ph.accept(visitor);
 }
 
+/** @brief Example visitor supporting all Parameter classes shipped with JUCE.
+
+    You can use is as the base class of your Visitor bases (if you want to
+   support custom parameter types
+*/
 struct JuceParameterVisitor {
   JuceParameterVisitor() = default;
   virtual ~JuceParameterVisitor() = default;
@@ -379,5 +396,7 @@ struct JuceParameterVisitor {
   virtual void visit(juce::AudioParameterChoice&) = 0;
 };
 
+/** @brief Use this class as a default ParameterHolder if you don't use custom
+ * Parameter classes */
 using JuceParameterHolder = ParameterHolder<JuceParameterVisitor>;
 }  // namespace wolfsound
