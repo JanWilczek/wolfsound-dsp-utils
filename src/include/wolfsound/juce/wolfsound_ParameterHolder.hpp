@@ -159,9 +159,13 @@ namespace wolfsound {
     For the interested, the std::move(builder) requirement ensures that the
     builder is not used after calling build(). If it is, the code
     won't compile.
+
+    To understand the Type Erasure pattern and the Visitor pattern,
+    I recommend Klaus Iglberger's book "C++ Software Design."
  */
 template <class Visitor>
 class ParameterHolder {
+  /** @brief Internal type erasure wrapper for parameter classes. */
   class TypeErasedParameter {
   public:
     template <class Parameter>
