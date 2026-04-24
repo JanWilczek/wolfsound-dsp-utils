@@ -162,6 +162,12 @@ namespace wolfsound {
 
     To understand the Type Erasure pattern and the Visitor pattern,
     I recommend Klaus Iglberger's book "C++ Software Design."
+
+    @tparam Visitor base class of all supported visitors. Should contain a void
+   visit(const ParameterClass&) abstract method for every supported Parameter
+   class.
+
+    @see JuceParameterVisitor, JuceParameterHolder
  */
 template <class Visitor>
 class ParameterHolder {
