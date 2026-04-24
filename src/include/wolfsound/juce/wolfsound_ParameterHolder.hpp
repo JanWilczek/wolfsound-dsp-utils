@@ -310,6 +310,15 @@ juce::Array<juce::var> toVarArray(ParameterHolder<Visitor>& ph) {
   return visitor.result();
 }
 
+/** @brief Updates parameters in the holder based on values in the passed-in
+   array
+
+    The array should contain juce::DynamicObject instances, each having
+    an "id" field with a string and a "value" field with the parameter value,
+    exactly like the array in SerializedParameters.
+
+    @see SerializedParameters
+*/
 template <class Visitor>
 class UpdatingVisitor : public Visitor {
 public:
@@ -380,7 +389,7 @@ void update(ParameterHolder<Visitor>& ph,
 /** @brief Example visitor supporting all Parameter classes shipped with JUCE.
 
     You can use is as the base class of your Visitor bases (if you want to
-   support custom parameter types
+    support custom parameter types.
 */
 struct JuceParameterVisitor {
   JuceParameterVisitor() = default;
@@ -397,6 +406,6 @@ struct JuceParameterVisitor {
 };
 
 /** @brief Use this class as a default ParameterHolder if you don't use custom
- * Parameter classes */
+    Parameter classes */
 using JuceParameterHolder = ParameterHolder<JuceParameterVisitor>;
 }  // namespace wolfsound
