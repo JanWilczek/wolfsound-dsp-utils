@@ -343,7 +343,7 @@ public:
 
   void visit(juce::AudioParameterInt& parameter) override {
     visitImpl(parameter, [&](const auto& v) {
-      if (v.isInt()) {
+      if (v.isInt() || v.isInt64()) {
         parameter = static_cast<int>(v);
       }
     });
