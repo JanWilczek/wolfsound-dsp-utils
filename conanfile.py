@@ -9,7 +9,7 @@ from conan.tools.build import check_min_cppstd
 # and: https://github.com/conan-io/conan-center-index/blob/master/recipes/doctest/2.x.x/conanfile.py
 class WolfSoundDspUtilsRecipe(ConanFile):
     name = "wolfsound-dsp-utils"
-    version = "0.6.0"
+    version = "0.6.1"
     settings = "os", "arch", "compiler", "build_type"
     exports_sources = "src/*", "tests/*", "CMakeLists.txt", "cmake/*"
     no_copy_source = True
