@@ -64,32 +64,59 @@
 
 namespace wolfsound {
 /** @brief Wrapper around a properly structured juce::var containing parameter
-   IDs and their values. Use it for storing parameter values.
+    IDs and their values. Use it for storing parameter values in an abstract
+    representation.
 
-Conceptually, this class holds a JSON object structured as follows
+    Conceptually, this class holds a JSON object structured as follows
     @code
-{
-  "parameters": [
     {
-      "id": "floatParam",
-      "value": 1.0
-    },
-    {
-      "id": "boolParam",
-      "value": false
-    },
-    {
-      "id": "intParam",
-      "value": 5
-    },
-    {
-      "id": "choiceParam",
-      "value": "choice 0"
+      "parameters": [
+        {
+          "id": "floatParam",
+          "value": 1.0
+        },
+        {
+          "id": "boolParam",
+          "value": false
+        },
+        {
+          "id": "intParam",
+          "value": 5
+        },
+        {
+          "id": "choiceParam",
+          "value": "choice 0"
+        }
+      ]
     }
-  ]
-}
-@endcode
-        */
+    @endcode
+
+    You can use this class in tandem with ParameterHolder for parameter
+    serialization and deserialization in PluginProcesser by copying & pasting
+    the following boilerplate.
+
+    @code
+    void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
+      const auto serializedParameters = wolfsound::SerializedParameters::from(
+          wolfsound::toVarArray(parameterHolder_));
+      if (serializedParameters.has_value()) {
+        juce::MemoryOutputStream memory{destData, true};
+        juce::JSON::writeToStream(memory, serializedParameters->toVar());
+      }
+    }
+
+    void PluginProcessor::setStateInformation(const void* data, int sizeInBytes)
+   { juce::MemoryInputStream inputStream{data, static_cast<size_t>(sizeInBytes),
+                                          false};
+      const auto deserializedParameters = juce::JSON::parse(inputStream);
+      const auto parameters =
+          wolfsound::SerializedParameters::from(deserializedParameters);
+      if (parameters.has_value()) {
+        wolfsound::update(parameterHolder_, parameters->toVarArray());
+      }
+    }
+    @endcode
+*/
 class SerializedParameters {
 public:
   /** @brief Return an object of this class if the input is a
